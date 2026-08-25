@@ -1,0 +1,32 @@
+name: audit
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: genvm-lint check contracts/*.py
+      - run: genvm-lint typecheck contracts/*.py --strict
+      - run: pytest tests/direct -q
+      - run: |
+          python tests/run_glsim.py --port 4000 --validators 5 > glsim.log 2>&1 &
+          python - <<'PY'
+          import time, urllib.request
+          for _ in range(60):
+              try:
+                  urllib.request.urlopen('http://127.0.0.1:4000/api', timeout=1)
+                  break
+              except Exception:
+                  time.sleep(1)
+          else:
+              raise SystemExit('GLSim did not start')
+          PY
+          gltest tests/integration -v -s --network localnet
