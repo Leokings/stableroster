@@ -25,7 +25,7 @@ tests and review documents, and the exact StudioNet deployment recorded in
 | Cross-repository wallet reuse | NONE across 100 roles |
 | Private key or mnemonic in repository | NONE |
 | Workspace-wide originality scan | PASS, 161 contract sources scanned |
-| GitHub push or remote | NONE |
+| GitHub destination (2026-08-28 publication update) | Private repository: Leokings/stableroster |
 
 StudioNet contract: 0x835D4992fc688AeAe043f0B30839BDB3132282D4
 
@@ -44,3 +44,7 @@ Validators independently re-execute the bounded semantic task and the custom val
 No known source, build, test, consensus, wallet, secret, dependency, provenance,
 or repository-hygiene blocker remains. Human program review can still apply its
 own policy judgment; this audit does not promise acceptance.
+
+Publication note: private GitHub evidence requires reviewer access. The original
+StudioNet source and wallets are unchanged. CI uses the server's GET /health route
+for readiness; /api is a POST-only JSON-RPC route. No live wallet keys are used by CI.

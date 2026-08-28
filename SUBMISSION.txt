@@ -1,0 +1,40 @@
+4. StableRoster
+
+Contribution Date
+08/25/2026
+
+Title
+StableRoster - Bilateral stable roster construction
+
+Notes / Description
+Built StableRoster, a reusable GenLayer intelligent contract for bilateral stable roster construction. Consensus produces complete preference matrices for two cohorts; deterministic Gale-Shapley matching creates pairs that require member responses. One deployment supports multiple independently keyed records and callers. Inputs are public, caller-supplied snapshots; the contract does not automatically fetch or authenticate sources and moves no funds. GenVM lint, strict type checking, 4 direct tests and one five-validator GLSim flow passed. StudioNet verified successful finalized intelligent execution, final-state readback and matching deployed source.
+
+Evidence 1 Type
+GitHub Repository
+
+Evidence 1 URL
+https://github.com/Leokings/stableroster
+
+Evidence 2 Type
+GitHub File
+
+Evidence 2 URL
+https://github.com/Leokings/stableroster/blob/main/deployments/studionet.json
+
+Evidence 3 Type
+GenLayer Studio Contract
+
+Evidence 3 URL
+https://studio.genlayer.com/?import-contract=0x835D4992fc688AeAe043f0B30839BDB3132282D4
+
+Evidence 4 Type
+GenLayer Explorer Contract
+
+Evidence 4 URL
+https://explorer-studio.genlayer.com/address/0x835D4992fc688AeAe043f0B30839BDB3132282D4
+
+Evidence 5 Type
+Other
+
+Evidence 5 URL
+https://explorer-studio.genlayer.com/tx/0x4059545d610f6492dc06bf3f46bc8ccf0978c3358ddde766748c495bbc3627f4

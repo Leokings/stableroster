@@ -4,29 +4,46 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RUN_STUDIONET: "0"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt
-      - run: genvm-lint check contracts/*.py
-      - run: genvm-lint typecheck contracts/*.py --strict
-      - run: pytest tests/direct -q
-      - run: |
-          python tests/run_glsim.py --port 4000 --validators 5 > glsim.log 2>&1 &
+          cache: pip
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Lint and strict typecheck
+        run: |
+          genvm-lint check contracts/*.py
+          genvm-lint typecheck contracts/*.py --strict
+      - name: Direct tests
+        run: python -m pytest tests/direct -q
+      - name: Five-validator GLSim integration
+        shell: bash
+        run: |
+          python tests/run_glsim.py --port 4000 --validators 5 --no-browser --seed 20260825 > glsim.log 2>&1 &
+          GLSIM_PID=$!
+          trap 'kill "$GLSIM_PID" 2>/dev/null || true' EXIT
           python - <<'PY'
-          import time, urllib.request
+          import json, time, urllib.request
           for _ in range(60):
               try:
-                  urllib.request.urlopen('http://127.0.0.1:4000/api', timeout=1)
-                  break
+                  with urllib.request.urlopen('http://127.0.0.1:4000/health', timeout=1) as response:
+                      if json.load(response).get('status') == 'ok':
+                          break
               except Exception:
-                  time.sleep(1)
+                  pass
+              time.sleep(1)
           else:
-              raise SystemExit('GLSim did not start')
+              raise SystemExit('GLSim did not become healthy')
           PY
           gltest tests/integration -v -s --network localnet

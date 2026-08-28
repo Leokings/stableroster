@@ -17,4 +17,6 @@
 - [x] No private key, mnemonic, or populated environment file
 - [x] Workspace-wide originality and internal pairwise audit
 - [x] Reusable mechanism and off-chain boundary documented
-- [x] No GitHub remote and no push
+- [x] Prepared for private publication to Leokings/stableroster
+- [ ] Ensure reviewers have read access to private GitHub evidence
+- [ ] Submit the contribution through the portal

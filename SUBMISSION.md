@@ -12,7 +12,7 @@ Why GenLayer: GenLayer consensus performs the bounded semantic step, then determ
 
 Reusable: Yes. One deployment supports many independently keyed records and callers; the live fixture is only an example.
 
-Repository: Standalone local repository. No GitHub remote is configured and nothing was pushed.
+Repository: https://github.com/Leokings/stableroster (private; reviewers require read access).
 
 Contract source: contracts/stable_roster.py
 
@@ -29,3 +29,5 @@ Verification: GenVM lint PASS; strict typecheck PASS; 4 direct tests PASS; five-
 Originality: Compared with 161 workspace contract sources. Nearest pre-existing structural score is 0.171086; mechanism and source hash are distinct.
 
 Data boundary: Caller-supplied public data only. No external source fetching, funds, identity attestation, legal effect, or private-data guarantee.
+
+Plain-text portal fields: SUBMISSION.txt. Notes / Description is within the 1,000-character form limit.
