@@ -1,14 +1,19 @@
 # StableRoster v2
 
 A reusable GenLayer bilateral pairing primitive: validators independently rank
-fit under a frozen policy, deterministic Gale–Shapley creates stable pairs, and
+fit under a frozen policy, deterministic Gale-Shapley creates stable pairs, and
 each paired wallet must explicitly accept before a roster becomes SEALED.
 
-Status (2026-10-18): local remediation, not pushed or deployed. Lint and strict
-typechecking pass; 25 direct contract tests, 4 five-validator GLSim lifecycle
-scenarios and 11 offline journal tests pass. Local model responses are mocked.
-The August v1 live proof stopped at AWAITING_RESPONSES; it proves no completed
-consent or expiry flow and does not prove this changed source.
+Status (2026-10-18): v2 is deployed and verified on StudioNet. The fresh live
+suite passed both lifecycle tests plus a separate runtime probe. Five cases
+cover SEALED, DECLINED, WITHDRAWN, profile injection and real-time EXPIRED.
+All 24 primary transactions finalized: 14 successful executions and 10 expected
+rejections. The repository's public-access release check is still pending.
+
+- [Inspect the live contract in StudioNet](https://studio.genlayer.com/?import-contract=0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0)
+- [Inspect its address and transactions](https://explorer-studio.genlayer.com/address/0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0)
+- [Deployed source, pinned to its source commit](https://github.com/Leokings/stableroster/blob/6b6d17b50162cebeae7b14cdbb4dcca3fdc7b2ab/contracts/stable_roster.py)
+- [Release proof with actual receipts, votes and final records](deployments/studionet.json)
 
 ## Mechanism and lifecycle
 
@@ -17,7 +22,7 @@ response deadline are frozen. Validators agree on complete integer preference
 permutations. Code, not the model, chooses the stable matching and lifecycle.
 
 ```text
-Public profiles + frozen policy -> preference consensus -> Gale–Shapley pairs
+Public profiles + frozen policy -> preference consensus -> Gale-Shapley pairs
 AWAITING_RESPONSES -> SEALED | DECLINED | WITHDRAWN | EXPIRED
 ```
 
@@ -55,17 +60,46 @@ is_fully_accepted(roster_id: str) -> bool
    Wait for successful finalized receipts and read final state before relying
    on membership. is_fully_accepted is true only for SEALED.
 
-For a wallet-free exercise run tests/direct/test_stable_roster.py and the
-regression suite; inspect the four terminal lifecycles in
-tests/integration/test_stable_roster_consensus.py. These are local simulations,
-not a public live app. No current v2 public contract address exists.
+This is a standalone MIT contract, not a hosted frontend. Copy the source and
+configure your own cohorts and policy. All submitted text and responses are
+permanently public. Use synthetic profiles for experiments.
 
-## Local verification
+## Inspect completed cases without a wallet
 
-Use Python 3.12+ and separate terminals for the last two commands:
+With Python 3.12+:
 
 ```text
 python -m pip install -r requirements.txt
+python scripts/verify_studionet.py
+```
+
+The verifier performs only public reads: chain ID, exact deployed source,
+all seven interface methods, every final case, finalized execution outcomes
+and actual vote maps. It neither loads a wallet nor submits a transaction.
+StudioNet state can be reset; a future unavailable record is not new live proof.
+
+| Case | Final public state |
+| --- | --- |
+| sealed | SEALED, all four paired wallets accepted |
+| declined | DECLINED |
+| withdrawn | WITHDRAWN |
+| injection | WITHDRAWN, expected topic pairs/rankings retained before withdrawal |
+| expiry | EXPIRED, late response rejected and unrelated caller closed it |
+
+The six fresh test wallets were controlled by one test operator; this proves
+wallet authorization, not six independent people. Native consensus was
+MAJORITY_AGREE; actual idle/disagree votes are preserved, not called unanimous.
+Configured model names do not prove heterogeneous independence or fallback use.
+
+## Local verification
+
+GenVM lint and strict typechecking pass. Local checks: 25 direct contract tests,
+4 five-validator GLSim lifecycle scenarios and 15 offline tooling tests.
+Mocked local model responses are distinct from the real-model live suite.
+
+Use separate terminals for the final two commands:
+
+```text
 genvm-lint check contracts/stable_roster.py
 genvm-lint typecheck contracts/stable_roster.py --strict
 pytest tests/direct tests/tooling -v
@@ -73,23 +107,24 @@ python tests/run_glsim.py --port 4068 --validators 5 --no-browser
 gltest tests/integration -v -s --network localnet --rpc-url http://127.0.0.1:4068/api
 ```
 
-Public-network tests remain opt-in and must not run without release approval.
-See deployments/README.md for preflight, external fresh wallets, checkpoints and
-the separately opt-in real-time expiry test.
+Public-network tests remain opt-in and require explicit release approval.
+See deployments/README.md for preflight, external fresh wallets, resumable
+checkpoints and the separately opt-in real-time expiry test.
 
-## Compatibility and boundaries
+## Compatibility, history and trust boundaries
 
 v2 adds a required response_deadline parameter, expire_roster, immutable
 terms_digest, closure timestamps and schema stableroster/roster/v2. Four-argument
-v1 build calls must be migrated. Do not point consumers at v1 and claim the new
-deadline or strict-consensus protections.
+v1 build calls must be migrated. The old v1 address is not an upgraded contract.
 
-This MIT-licensed standalone contract is reusable without a frontend. It moves
-no funds, fetches no sources, and establishes neither real-world identity nor
-profile authenticity. All submitted profiles, policies and responses are public.
-Exact ranking consensus can disagree on ambiguous profiles; no unvalidated
-fallback ranking is silently accepted.
+The August v1 proof is preserved in deployments/historical/studionet-v1.json.
+It stopped at AWAITING_RESPONSES and did not prove completed consent or expiry.
+The current v2 proof is independent, with exact source bytes verified on-chain.
+
+This contract moves no funds, fetches no sources, and establishes neither
+real-world identity nor profile authenticity. Exact ranking consensus can
+disagree on ambiguous profiles; no unvalidated fallback is silently accepted.
+StudioNet checks are not production certification.
 
 See AUDIT.md, DESIGN.md, SECURITY.md, SOURCE_POLICY.md, ORIGINALITY.md,
-REVIEW_CHECKLIST.md and draft SUBMISSION.txt. The current deployment manifest
-explicitly records NOT_DEPLOYED.
+REVIEW_CHECKLIST.md and the copy/paste Portal fields in SUBMISSION.txt.

@@ -1,23 +1,18 @@
-# StableRoster — Portal draft, not ready to submit
+# StableRoster v2 - Portal fields
 
-Form-shaped draft: SUBMISSION.txt. The fixes are local, unpushed and undeployed;
-the repository is private. The old August deployment must not be presented as
-proof of strict index checking, finite response windows or completed consent.
-
-Title: StableRoster v2 — Stable pairing with finite bilateral consent
+Use SUBMISSION.txt for the complete plain-text copy/paste form and five
+evidence entries. The owner still performs the final Portal submission.
 
 Category: Intelligent Contracts
+Contribution date: 10/18/2026
+Title: StableRoster v2 - Stable pairing with finite bilateral consent
 
-Repository: https://github.com/Leokings/stableroster
+The description reflects fresh v2 live evidence, not the historical August
+AWAITING_RESPONSES-only example. Source is pinned to the deployed source commit.
+The proof includes transaction links, actual votes and final records so they
+do not need separate form fields for every transaction.
 
-The note describes local checks only. After an approved push, deployment and
-live lifecycle/adversarial tests, replace the pending-proof sentence with actual
-finalized outcomes and link the pinned source and new manifest.
-
-Evidence required: public repository, source pinned to the deployed release,
-fresh proof manifest, new Studio/Explorer contract URL, and key successful and
-expected-failure transaction links. No new contract URL is available yet.
-
-Historical evidence remains in deployments/historical/studionet-v1.json. It
-recorded only pairs [[0,0],[1,1]] with state AWAITING_RESPONSES, not a sealed
-roster. Do not imply participants accepted the old live example.
+Release access check: repository publication and anonymous links pending.
+Do not submit until that check is recorded in REVIEW_CHECKLIST.md.
+Technical and scoped distinctiveness checks passed; see AUDIT.md.
+No points, review outcome or weekly capacity are guaranteed.

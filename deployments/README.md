@@ -1,62 +1,86 @@
-# Deployment evidence and approved-release procedure
+# StudioNet v2 release evidence
 
-Current v2: NOT_DEPLOYED. studionet.json is a readiness record, not proof.
-historical/studionet-v1.json preserves August's exact-source positive build.
-Its state was AWAITING_RESPONSES, so it proves neither bilateral completion nor
-any new deadline, strict-type or terminal-state protection.
+Current deployment (2026-10-18): VERIFIED.
+Studio: https://studio.genlayer.com/?import-contract=0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
+Explorer: https://explorer-studio.genlayer.com/address/0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
+Source: https://github.com/Leokings/stableroster/blob/6b6d17b50162cebeae7b14cdbb4dcca3fdc7b2ab/contracts/stable_roster.py
 
-No live-network test ran during remediation. Do not deploy, push or change
-visibility without the owner's approval.
+studionet.json binds exact source bytes, runner, commit and blob to the fresh
+contract. It contains a runtime probe, five final cases, 24 primary receipts,
+actual votes, expected failures, per-step reads and final records.
+The wallet-free verifier independently rechecks live code/schema, each final
+record, and every primary transaction's finalization, execution and vote map:
 
-## Preflight for a later authorized run
+```text
+python -m pip install -r requirements.txt
+python scripts/verify_studionet.py
+```
 
-1. Verify current official SDK/network/runner support and polling guidance;
-   probe the pinned runtime first. Local lint is not a live compatibility probe.
-2. Review and push a source commit, recording the commit and blob hashes.
-3. Provide SIX fresh repository-specific disposable accounts (owner, four
-   members and an unrelated expiry/unauthorized caller), stored in an external
-   wallet bundle. Do not reuse historical wallets. StudioNet needs no funding.
-4. Only after approval, opt in with RUN_STUDIONET=1 and the external
-   GENLAYER_STUDIONET_WALLET_FILE; target
-   tests/integration/test_studionet_smoke.py with --network studionet.
-5. The main test exercises SEALED, DECLINED and WITHDRAWN, unauthorized and
-   closed-state expected failures, final-state reads and exact source/schema.
-   It has a two-hour deadline to accommodate normal testing, not production
-   network timing guarantees.
-6. The additional real-time expiry test requires RUN_STUDIONET_TIMEOUT=1.
-   It creates a ten-minute response window, waits finitely, rejects a late
-   response, and expires from the unrelated sixth wallet without an LLM call.
-   It reuses the primary deployment and appends its EXPIRY case to the same
-   public journal. All lifecycle proofs therefore share one contract address.
-7. Add/review real profile-injection and legitimate positive cases before
-   release; existing mocked adversarial checks are not a live model safety
-   certification. Stop on any unexpected judgment or state.
+The main deployment's 14 successful and 10 expected failed executions are
+distinct from the two successful runtime-probe transactions. Finalized alone
+does not mean execution success. The suite passed two live lifecycle tests
+and the separate probe test. Native consensus was MAJORITY_AGREE; the manifest
+preserves idle/disagree votes instead of claiming unanimous agreement.
 
-The external bundle schema is genlayer-studionet-wallet-bundle/v1, repository
-stableroster, with an accounts array whose entries contain address and matching
-private_key. No external bundle was opened or generated during this local fix.
+historical/studionet-v1.json preserves the old August build, which reached only
+AWAITING_RESPONSES. It proves neither completed consent nor v2 protections.
 
-## Resumable checkpoints
+## Authorized reproduction, not an automatic deployment instruction
 
-The journal uses verified hash-returning SDK calls and saves consensus hashes
-before waiting for finality. Ignored .studionet-runs/v2.json survives gltest's
-.artifacts cleanup. Original readbacks are preserved on resumed runs.
+A new deployment or public-network test requires explicit owner approval.
+Do not rerun live writes just to inspect existing evidence.
 
-A timeout is PENDING. Repeating the same bound source/accounts/arguments polls
-the existing hash; a finalized failed execution stays FINALIZED_ERROR, not
-success. A lost broadcast response is SUBMISSION_UNCERTAIN and blocks automatic
-resubmission until manual public nonce/transaction reconciliation. The SDK
-waits for a transport receipt before returning the consensus hash; this gap is
-explicitly not an atomic broadcast+checkpoint guarantee.
+1. Verify current official SDK/network/runner support and polling guidance.
+   This release used StudioNet chain 61999 and genlayer-py 0.16.3. A finalized
+   pinned-runtime probe preceded the main deployment.
+2. Push a reviewed source commit and record its byte digest and git blob.
+3. Use SIX fresh repository-specific disposable accounts: owner, four paired
+   members and an unrelated expiry/unauthorized caller. Store their bundle
+   outside the workspace in an ACL-restricted directory. Never print keys or
+   reuse historical wallets. The fresh unfunded accounts worked on StudioNet.
+4. Opt in with RUN_STUDIONET=1 and external GENLAYER_STUDIONET_WALLET_FILE;
+   target tests/integration/test_studionet_smoke.py with --network studionet.
+   These are process-local test settings, not committed environment files.
+5. The main test covers SEALED, DECLINED, WITHDRAWN and profile injection,
+   unauthorized/closed-state expected failures, source/schema and readbacks.
+   Its two-hour response window is a fixture choice, not a network guarantee.
+6. RUN_STUDIONET_TIMEOUT=1 additionally enables the real-time expiry test.
+   Its frozen ten-minute window rejects a late response; an unrelated wallet
+   expires the roster without an LLM call. Both tests share the primary address.
+7. Stop on unexpected judgments or state. Do not reset a missed deadline or
+   relabel an unexpected execution as an expected rejection.
 
-An exclusive lock blocks concurrent runs. After a crash, confirm no process is
-active and reconcile transactions before removing a stale lock. Deadlines are
-persisted so a resumed test does not silently change terms. If a live case
-misses its response window, report that failure; do not silently reset its
-deadline or relabel it successful.
+The external bundle uses schema genlayer-studionet-wallet-bundle/v1,
+repository stableroster. It contains secrets and is never public evidence.
+Profiles are synthetic supplied text; no identity/authenticity is established.
 
-Polls are bounded at 100 attempts, six seconds apart; check current network
-guidance before enabling them. Inspect the public-only journal and assemble a
-manifest with commit/blob/runner, source bytes, every receipt/vote, expected
-failure labels and readbacks. VERIFIED denotes only listed assertions, not
-production certification. Never overwrite historical evidence.
+## Resumable checkpoints and actual recovery
+
+The journal saves consensus hashes before waiting for finality. Ignored
+.studionet-runs/v2.json survives .artifacts cleanup. Original readbacks are
+preserved and later resumed snapshots are labeled separately.
+
+A timeout is PENDING. A bound rerun polls the existing hash. A finalized failed
+execution stays FINALIZED_ERROR. A lost broadcast response becomes
+SUBMISSION_UNCERTAIN and blocks automatic resubmission. SDK transport receipt
+handling leaves a gap before the consensus hash is returned; this is not an
+atomic broadcast/checkpoint guarantee. An exclusive lock prevents concurrent
+runs. Never remove a lock without confirming the process and public state.
+
+This release encountered HTTP 502 during a pre-sign nonce lookup for accept_3.
+The operator checked latest and pending nonce zero, plus unchanged on-chain
+PENDING state, before authorizing the narrowly scoped recovery helper.
+The retained reconciliation records that evidence. It did not resend an
+already-broadcast transaction. Read-only 429/502/503/504 retries are finite;
+raw transaction submission is not retried automatically.
+
+Finality polling is bounded at 100 attempts, six seconds apart; verify current
+network guidance for future runs. Deadlines persist across resumes.
+
+## Evidence boundaries
+
+VERIFIED means the manifest's specific assertions passed, not production
+certification. All six wallets were controlled by one operator. Model names
+are receipt configuration, not proof of runtime fallback or independent errors.
+StudioNet records may become unavailable after network resets.
+No Bradbury deployment or Portal submission was part of this release.

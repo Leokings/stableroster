@@ -1,42 +1,40 @@
-DRAFT — DO NOT SUBMIT YET
-Current fixes are local, not pushed or deployed. Repository remains private.
-
 Contribution Date
-Use the actual release/contribution date; this local revision is 10/18/2026.
+10/18/2026
 
 Title
 StableRoster v2 — Stable pairing with finite bilateral consent
 
 Notes / Description
-Built StableRoster v2, a reusable MIT-licensed GenLayer Intelligent Contract for bilateral matching. Validators independently derive complete fit rankings from bounded public profiles under a frozen policy, strictly validate integer permutations, and agree on every normalized field. Deterministic Gale-Shapley creates stable pairs; only each paired wallet can accept its own assignment. All paired members must consent to seal; decline, owner withdrawal or permissionless expiry closes the roster. A maximum seven-day deadline, nonzero unique wallets, immutable term digests and terminal-state guards prevent stuck or rewritten records. Lint, strict typechecking, 25 direct tests, 4 five-validator local lifecycle scenarios and 11 offline tooling tests pass. Fresh live v2 proof is pending; the August test reached awaiting responses only. No funds, identity or profile-authenticity attestation.
+StableRoster v2 is an MIT-licensed reusable GenLayer contract for bilateral matching and finite consent. Validators independently rank bounded public profiles under a frozen policy, validate complete integer permutations, and agree on every normalized field. Deterministic Gale-Shapley creates stable pairs; only each paired wallet can accept. All paired members must consent to seal. Decline, owner withdrawal or permissionless expiry closes the roster. Nonzero unique wallets, a maximum seven-day deadline, immutable terms digests and terminal guards prevent stuck or rewritten records.
+
+A fresh StudioNet deployment proved SEALED, DECLINED, WITHDRAWN and EXPIRED lifecycles plus a profile-injection case, with 10 finalized expected rejections. Includes 25 direct tests, 4 five-validator local scenarios, 15 offline tooling tests, exact deployed-source proof and a wallet-free verifier. Profiles are supplied text, not verified identities or true preferences. No funds move.
 
 Evidence 1 Type
 GitHub Repository
 
 Evidence 1 URL
 https://github.com/Leokings/stableroster
-Private — public reviewer access is a release blocker.
 
 Evidence 2 Type
-GitHub File — deployed source pinned to release commit
+GitHub File — exact deployed source
 
 Evidence 2 URL
-PENDING — current local source is not pushed.
+https://github.com/Leokings/stableroster/blob/6b6d17b50162cebeae7b14cdbb4dcca3fdc7b2ab/contracts/stable_roster.py
 
 Evidence 3 Type
-GitHub File — current release proof manifest
+GitHub File — finalized deployment proof
 
 Evidence 3 URL
-PENDING — no current v2 live proof.
+https://github.com/Leokings/stableroster/blob/main/deployments/studionet.json
 
 Evidence 4 Type
 GenLayer Studio Contract
 
 Evidence 4 URL
-PENDING — add the new v2 import-contract URL after approved deployment.
+https://studio.genlayer.com/?import-contract=0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
 
 Evidence 5 Type
-GenLayer Explorer Contract / key demonstration transactions
+GenLayer Explorer Contract
 
 Evidence 5 URL
-PENDING — add new finalized v2 contract and expected-failure proof links.
+https://explorer-studio.genlayer.com/address/0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0

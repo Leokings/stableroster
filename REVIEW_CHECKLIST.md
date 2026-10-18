@@ -1,25 +1,27 @@
-# Review checklist — current v2, 2026-10-18
+# Review checklist - current v2, 2026-10-18
 
 - [x] Strict leader-index validation blocks Boolean/float equality spoofing
 - [x] Maximum seven-day deadline, exact-boundary guard and permissionless expiry
 - [x] Unique nonzero participant wallets and immutable terminal states
-- [x] Pinned runner; local GenVM lint and strict typecheck pass
-- [x] 25 direct contract tests, including forged leaders and 2x2 stability profiles
-- [x] 4 local five-validator lifecycle cases: SEALED/DECLINED/WITHDRAWN/EXPIRED
-- [x] 11 offline journal tests, including pending resume and uncertain broadcast
+- [x] Pinned runner; GenVM lint and strict typecheck pass
+- [x] 25 direct tests, including forged leaders and 2x2 stability profiles
+- [x] 4 local five-validator lifecycle cases, with mocked models
+- [x] 15 offline tooling tests, including secret redaction and safe recovery
 - [x] Breaking API/schema change and public-profile trust boundary documented
-- [x] Historical v1 proof separated; its live state was AWAITING_RESPONSES only
+- [x] Historical v1 proof separated, not claimed as completed consent
 - [x] Scoped comparison against 22 prior submissions and EvidenceCircuit
-- [ ] Verify current network/client/runner with an approved probe
-- [ ] Push reviewed source after owner approval
-- [ ] Fresh repository-specific wallets and approved v2 deployment
-- [ ] Real-model complete bilateral acceptance, decline and withdrawal flows
-- [ ] Finalized unauthorized/replay/terminal-state expected failures
-- [ ] Real-time deadline/permissionless-expiry test and profile-injection cases
-- [ ] Final-state readbacks and exact deployed source/schema verification
-- [ ] Public manifest with commit, blob, all receipts, votes and expected failures
-- [ ] Public repo only with explicit permission; evidence links checked logged out
-- [ ] Replace draft fields, then owner submits through the Portal
+- [x] Current chain/client/runner checked with a finalized runtime probe
+- [x] Reviewed source pushed with the owner's approval
+- [x] Six fresh repository-specific wallets; new v2 deployment
+- [x] Real-model bilateral acceptance, decline and withdrawal completed
+- [x] Ten finalized unauthorized/replay/late-response expected failures
+- [x] Real-time permissionless-expiry and profile-injection cases completed
+- [x] Final records and exact deployed source / all seven methods verified
+- [x] Public-format manifest with source commit, receipts and actual vote maps
+- [x] Wallet-free read-only verifier; no key or signing required
+- [ ] Approved public visibility and anonymous evidence-link checks
+- [x] Copy/paste submission fields updated to actual v2 outcomes
+- [ ] Owner submits the final Portal contribution
 
-Local five-validator mocks are not live heterogeneous-model or GenVM proof.
-No visibility change, push, deployment or Portal action was performed here.
+Local mocks are not live model proof. The live cases are not a production or
+global prompt-injection certification. No Bradbury or Portal action was taken.

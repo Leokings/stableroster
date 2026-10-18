@@ -138,7 +138,7 @@ def test_studionet_permissionless_roster_expiry():
         assert expired["state"] == "EXPIRED"
         journal.readback("expire", expired)
         assert contract.is_fully_accepted(args=[roster_id]).call(transaction_hash_variant=TransactionHashVariant.LATEST_FINAL) is False
-        proof = source_schema_proof(address, source, {"build_roster", "respond_pair", "expire_roster", "get_roster"})
+        proof = source_schema_proof(address, source, {"build_roster", "respond_pair", "withdraw_roster", "expire_roster", "get_roster", "partner_of", "is_fully_accepted"})
         observed = dict(journal.record.get("observed", {}))
         observed.setdefault("cases", {})["expiry"] = {"roster_id": roster_id, "state": "EXPIRED"}
         observed.update(contract_address=address, expiry_proof="VERIFIED")

@@ -1,26 +1,23 @@
-# StableRoster v2 remediation review — 2026-10-18
+# StableRoster v2 release review - 2026-10-18
 
-Scope: local contracts/stable_roster.py, tests, release tooling and documentation
-on branch codex/fix-review-blockers. No push, deployment, visibility change or
-Portal submission was performed.
+Scope: contracts/stable_roster.py, tests, release tooling and documentation.
+The owner approved pushing fixes, fresh StudioNet tests and public publication.
+No Bradbury deployment or Portal submission is included.
 
-Current source SHA-256:
-cc0034a745873b45640f4abd1cfecf0f139c13200fd3509994aa1c3109719527
-
+Deployed source commit: 6b6d17b50162cebeae7b14cdbb4dcca3fdc7b2ab
+Source SHA-256: cc0034a745873b45640f4abd1cfecf0f139c13200fd3509994aa1c3109719527
 Git blob: 293e5fd407ca3ed2cf3bd49aca46bc9fef2154f7
-Base commit: 07d8732e35a5e300246158e57ee3a2ceb7de76f2
-Changes remain uncommitted. This blob identifier is not a pushed release commit.
 
 ## Findings and fixes
 
-| Finding | Severity | Local resolution |
+| Finding | Severity | Resolution |
 | --- | --- | --- |
-| SR-1: raw Python equality accepted Boolean/float preference indexes | Medium | Validate the leader with the exact schema and true-integer permutations, compare canonical normalized matrices, validate again before storage |
-| SR-2: member responses could remain pending indefinitely | Medium | Required immutable future deadline, maximum seven days; exact-boundary response/withdrawal guard and permissionless deterministic expire_roster |
+| SR-1: raw Python equality accepted Boolean/float preference indexes | Medium | Exact schema, true-integer permutations, canonical normalized comparison and deterministic backstop |
+| SR-2: member responses could remain pending indefinitely | Medium | Immutable future deadline, maximum seven days, exact-boundary response/withdrawal guards and permissionless expire_roster |
 | SR-3: acceptance-required zero wallet allowed | Low | Reject zero and duplicate wallets before semantic work |
-| SR-4: owner could overwrite a declined/withdrawn terminal record | Additional hardening | All four terminal states reject later response/withdrawal/expiry; closure timestamps preserve the result |
-| Old live proof never completed bilateral consent | Review blocker | Full local lifecycle checks and new opt-in live tests prepared; fresh live execution still required |
-| Private repository / unpushed fixes | Evidence blocker | Preserved pending owner approval |
+| SR-4: owner could overwrite a declined/withdrawn terminal record | Additional hardening | All four terminal states reject later mutations; closure timestamps preserve the result |
+| Old live proof never completed bilateral consent | Review blocker | Fresh v2 live suite completed consent, decline, withdrawal, injection and expiry cases |
+| Private source / missing release evidence | Evidence blocker | Reviewed source pushed; current manifest exported; anonymous-access publication check pending |
 
 Added immutable terms_digest and bounded record serialization. The fifth
 response_deadline argument and roster/v2 schema are intentional breaking
@@ -33,31 +30,69 @@ changes; existing v1 clients and addresses must not be presented as updated.
 - Direct contract tests: 25 PASS, including forged Boolean/float/extra/missing
   rankings, all 16 two-by-two preference profiles, zero address, deadline
   boundaries, permissionless expiry, authorization and immutable terminal states.
-- GLSim: 4 PASS with five mocked validators for each build; complete SEALED,
-  DECLINED, WITHDRAWN and EXPIRED lifecycles, unauthorized/replay/late-response/
-  terminal-overwrite expected rejections, final-state and digest readbacks.
-- Offline journal tests: 11 PASS; persist-before-wait, pending resume, source/
-  request binding, uncertain broadcast, finalized failure handling, concurrent
-  lock, network guard and checkpoint survival of artifact cleanup.
+- GLSim: 4 PASS with five mocked validators, covering all four terminal states.
+- Offline tooling tests: 15 PASS, including checkpoint/resume, uncertain
+  broadcast handling, nonce-recovery guards and secret-redacting proof export.
+- Linux CI initially exposed a clock fixture defect: the harness updated the
+  typed time but not raw message datetime. The cross-platform fixture now
+  refreshes both. Contract logic and the existing assertions were not weakened.
 
-Local Python and mocked models do not prove live GenVM compatibility, actual
-ranking quality or heterogeneous-model prompt-injection resistance.
-The refreshed opt-in StudioNet tests, including the additional real-time expiry
-case, have NOT run. Expiry is permissionless but requires a transaction.
+## Live StudioNet verification
 
-## History and readiness gates
+Contract: 0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
+Studio: https://studio.genlayer.com/?import-contract=0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
+Explorer: https://explorer-studio.genlayer.com/address/0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0
 
-docs/history/AUDIT_2026-08-25.md preserves the old audit; its no-blockers statement
-is superseded. deployments/historical/studionet-v1.json records an old positive
-build reaching AWAITING_RESPONSES only. It never proved acceptance or timeout.
+Pinned runner: py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6
+Chain ID: 61999. SDK: genlayer-py 0.16.3.
+A separate runtime probe finalized deploy/write/read before the main deployment.
 
-Technical readiness: PASS for scoped local remediation; live runtime and
-real-model/finite lifecycle proof still pending, not production-certified.
-Distinctiveness: PASS against the 22 prior submissions and EvidenceCircuit,
-especially distinct from FlowDispatch max-flow. No global novelty claim.
-Evidence readiness: FAIL until the approved pushed/public source and fresh live
-manifest exist. deployments/studionet.json explicitly says NOT_DEPLOYED.
+Both live lifecycle tests passed: five final cases, 24 primary transactions.
+14 executions succeeded. Ten finalized errors were intentional: three
+unauthorized responses, six terminal response/withdrawal replays and one late
+response. All four paired fresh wallets accepted the SEALED case; decline and
+owner withdrawal completed independently. The injection case retained the
+expected topic pairs/rankings and was then withdrawn. The expiry case rejected
+a response after its frozen deadline and an unrelated sixth wallet called
+expire_roster successfully, with no model call for expiry.
 
-Follow REVIEW_CHECKLIST.md and deployments/README.md before release. Preserve
-expected failures, actual votes, every address and final-state readback; do not
-call a built-but-unaccepted roster a completed consent demonstration.
+Every final record and primary receipt was re-read by the wallet-free verifier.
+Exact live source bytes, source digest, git blob and all seven public methods
+were checked. deployments/studionet.json contains the actual receipt outcomes,
+vote maps, bounded model metadata, per-step readbacks and final records.
+
+A transient HTTP 502 occurred during nonce lookup BEFORE signing/broadcast of
+accept_3. Public latest/pending nonce zero and the unmodified PENDING response
+were independently checked. The manual, narrowly scoped reconciliation is
+retained in the manifest; only then was its first broadcast submitted.
+Read-only retries are finite. Transaction submission is never auto-retried.
+
+Native consensus was MAJORITY_AGREE. Idle and disagree votes remain in the
+proof; this is not a claim of unanimous agreement. Configured provider/model
+names do not establish runtime fallback use or independent model failures.
+
+## Trust boundaries and history
+
+Tests use synthetic public profiles. The operator controlled all six fresh
+disposable wallets. This demonstrates address-based authorization and specified
+lifecycle behavior, not identity, truthful profiles, real preferences, or broad
+prompt-injection immunity. There are no funds. Expiry is permissionless but
+requires a transaction. StudioNet persistence and production safety are not
+guaranteed by these tests.
+
+docs/history/AUDIT_2026-08-25.md and deployments/historical/studionet-v1.json
+preserve the old audit and old AWAITING_RESPONSES-only example. They are
+historical, not evidence for this v2 code.
+
+## Readiness gates
+
+Technical readiness: PASS for the audited scope, local checks and listed
+fresh live v2 scenarios. Not production-certified.
+Distinctiveness: PASS against the recorded 22 prior submissions and
+EvidenceCircuit, especially distinct from FlowDispatch's max-flow mechanism.
+No exhaustive/global novelty claim.
+Evidence readiness: PENDING only the approved public-repository and anonymous
+link checks. Source, current manifest and finalized live outcomes are complete.
+
+The final Portal contribution remains an owner action. No points, acceptance
+or weekly submission capacity are promised.
