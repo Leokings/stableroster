@@ -198,3 +198,22 @@ def test_rpc_timeouts_are_finite_preserve_explicit_values_and_install_once(monke
         session.get("https://studio.genlayer.com/api", timeout=None)
         session.get("https://studio.genlayer.com/api", timeout=2)
     assert observed == [(10, 45), (10, 45), 2]
+
+
+def test_gateway_retry_is_read_only_and_never_rebroadcasts_writes(monkeypatch):
+    import requests
+    from tests import studionet_support
+    calls = []
+    replies = [502, 200, 502]
+
+    def fake(session, method, url, **kwargs):
+        calls.append(kwargs["json"]["method"])
+        return SimpleNamespace(status_code=replies.pop(0))
+
+    monkeypatch.setattr(requests.sessions.Session, "request", fake)
+    monkeypatch.setattr(studionet_support.time, "sleep", lambda _: None)
+    studionet_support.install_rpc_timeouts()
+    with requests.Session() as session:
+        assert session.post("https://studio.genlayer.com/api", json={"method": "eth_getTransactionCount"}).status_code == 200
+        assert session.post("https://studio.genlayer.com/api", json={"method": "eth_sendRawTransaction"}).status_code == 502
+    assert calls == ["eth_getTransactionCount", "eth_getTransactionCount", "eth_sendRawTransaction"]

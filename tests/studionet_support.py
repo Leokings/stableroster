@@ -32,7 +32,26 @@ def install_rpc_timeouts():
     def bounded(session, method, url, **kwargs):
         if kwargs.get("timeout") is None:
             kwargs["timeout"] = (10, 45)
-        return original(session, method, url, **kwargs)
+        payload = kwargs.get("json", {})
+        rpc_method = payload.get("method") if isinstance(payload, dict) else None
+        safe_read = rpc_method in {
+            "eth_chainId", "eth_gasPrice", "eth_getTransactionCount",
+            "eth_getTransactionReceipt", "eth_getTransactionByHash",
+            "eth_getBlockByNumber", "eth_getCode", "eth_call",
+            "gen_call", "gen_getContractCode", "gen_getContractSchema",
+            "gen_getContractSchemaForCode",
+        }
+        for attempt in range(3):
+            try:
+                response = original(session, method, url, **kwargs)
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+                if not safe_read or attempt == 2:
+                    raise
+            else:
+                if not safe_read or getattr(response, "status_code", 200) not in (429, 502, 503, 504) or attempt == 2:
+                    return response
+            time.sleep(2 ** (attempt + 1))
+        raise AssertionError("unreachable_transport_retry")
 
     bounded._release_bounded = True
     requests.sessions.Session.request = bounded
