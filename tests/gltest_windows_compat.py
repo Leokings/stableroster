@@ -1,4 +1,4 @@
-"""Windows compatibility patches for genlayer-test 0.29.2."""
+"""Pinned-SDK clock compatibility plus Windows FD support for genlayer-test 0.29.2."""
 
 from __future__ import annotations
 
@@ -7,7 +7,26 @@ import sys
 import tempfile
 
 
+def install_raw_datetime_compatibility() -> None:
+    # genlayer-test 0.29.2 refreshes cached sender/origin but omits datetime.
+    # The v0.2.16 SDK exposes time in message_raw on every platform.
+    from gltest.direct.vm import VMContext
+    if getattr(VMContext, "_codex_raw_datetime_compat", False):
+        return
+    original_refresh = VMContext._refresh_gl_message
+
+    def refresh_gl_message(vm):
+        original_refresh(vm)
+        gl_module = sys.modules.get("genlayer.gl")
+        if gl_module is not None and getattr(gl_module, "message_raw", None) is not None:
+            gl_module.message_raw["datetime"] = vm._datetime
+
+    VMContext._refresh_gl_message = refresh_gl_message
+    VMContext._codex_raw_datetime_compat = True
+
+
 def install_windows_direct_compatibility() -> None:
+    install_raw_datetime_compatibility()
     if sys.platform != "win32":
         return
 
@@ -52,13 +71,6 @@ def install_windows_direct_compatibility() -> None:
             os.close(fd)
 
     original_cleanup = VMContext._cleanup_after_deactivate
-    original_refresh = VMContext._refresh_gl_message
-
-    def refresh_gl_message(vm):
-        original_refresh(vm)
-        gl_module = sys.modules.get("genlayer.gl")
-        if gl_module is not None and getattr(gl_module, "message_raw", None) is not None:
-            gl_module.message_raw["datetime"] = vm._datetime
 
     def cleanup_after_deactivate(vm):
         path = getattr(vm, "_codex_genlayer_stdin_path", None)
@@ -73,7 +85,6 @@ def install_windows_direct_compatibility() -> None:
                 vm._codex_genlayer_stdin_path = None
 
     loader._inject_message_to_fd0 = inject_message_to_fd0
-    VMContext._refresh_gl_message = refresh_gl_message
     VMContext._cleanup_after_deactivate = cleanup_after_deactivate
     loader._codex_genlayer_windows_compat = True
 
