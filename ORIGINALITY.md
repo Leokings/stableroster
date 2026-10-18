@@ -1,28 +1,22 @@
-# Originality audit
+# Scoped distinctiveness review — 2026-10-18
 
-The final source was compared against 161 GenLayer
-contract sources in the workspace. All twenty new target contracts were excluded
-from the pre-existing comparison pool.
+Compared against the owner's 22 accepted Intelligent Contracts visible in the
+Portal and against EvidenceCircuit. docs/PRIOR_SUBMISSIONS.md records the
+excluded set. This does not certify global novelty or the entire current
+review cohort.
 
-Nearest pre-existing source: `boxcomplete\contracts\manifest_recovery.py`
+StableRoster's core is bilateral complete preference consensus, deterministic
+stable marriage matching, and a finite wallet-consent lifecycle.
+FlowDispatch solves capacity-constrained maximum flow; it does not establish
+a no-blocking-pair result with each paired wallet able to reject.
+EvidenceCircuit executes a frozen predicate program; it has neither bilateral
+rankings nor participant matching/consent.
 
-Combined structural score: `0.171086`
+Ordinary stable matching itself is not claimed as an invention. The reusable
+GenLayer mechanism binds semantic fit rankings to a verifiable algorithm and
+individual acceptance state, instead of merely renaming an existing verdict
+wrapper.
 
-Token score: `0.275362`
-
-AST score: `0.095443`
-
-Nearest contract in this new set: `tradeoffatlas\contracts\tradeoff_atlas.py` with combined
-score `0.278336`. That score reflects shared safe GenLayer
-boilerplate. The mechanisms differ materially:
-
-- This repository: Consensus produces complete preference matrices for two cohorts; deterministic Gale-Shapley matching creates pairs that require member responses.
-- Other repository: Consensus emits a bounded score vector for every option; deterministic dominance pruning retains the complete non-dominated frontier.
-
-The two do not share the same semantic input, deterministic algorithm, storage
-record, state lifecycle, or decision views. Exact source SHA-256 values are also
-unique across all twenty repositories. The complete machine-readable reports are
-`review-tools/twenty-originality-audit.json` and
-`review-tools/twenty-pairwise-audit.json` at the workspace level.
-
-Similarity scoring is a review aid, not a guarantee of a human review outcome.
+The old August 161-source structural scores describe v1 and were not rerun on
+the changed source. They are not used as evidence that v2 is globally unique.
+Recheck any new submissions and the active cohort before a later publication.

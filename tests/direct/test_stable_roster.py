@@ -1,8 +1,10 @@
 import json
+from datetime import datetime, timezone
 
 
 POLICY = "Pair people by compatible goals and complementary experience while respecting every complete preference order."
 PREFS = {"left_preferences": [[0, 1], [1, 0]], "right_preferences": [[0, 1], [1, 0]]}
+DEADLINE = int(datetime(2026, 8, 26, 12, tzinfo=timezone.utc).timestamp())
 
 
 def _profiles(left_wallets, right_wallets):
@@ -15,7 +17,7 @@ def _build(contract, vm, owner, left_wallets, right_wallets):
     left, right = _profiles(left_wallets, right_wallets)
     vm.sender = owner
     vm.mock_llm(r".*Produce complete bilateral preference rankings.*", json.dumps(PREFS))
-    return contract.build_roster("spring", left, right, POLICY)
+    return contract.build_roster("spring", left, right, POLICY, DEADLINE)
 
 
 def test_gale_shapley_pairs_stably(contract, direct_vm, direct_alice, direct_bob, direct_charlie, direct_accounts):
@@ -46,4 +48,4 @@ def test_incomplete_preference_rejected(contract, direct_vm, direct_alice, direc
     direct_vm.sender = direct_alice
     direct_vm.mock_llm(r".*Produce complete bilateral preference rankings.*", json.dumps({"left_preferences": [[0], [1, 0]], "right_preferences": [[0, 1], [1, 0]]}))
     with direct_vm.expect_revert("[LLM_ERROR] incomplete_left_ranking"):
-        contract.build_roster("bad", left, right, POLICY)
+        contract.build_roster("bad", left, right, POLICY, DEADLINE)

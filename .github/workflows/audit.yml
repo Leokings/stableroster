@@ -25,8 +25,8 @@ jobs:
         run: |
           genvm-lint check contracts/*.py
           genvm-lint typecheck contracts/*.py --strict
-      - name: Direct tests
-        run: python -m pytest tests/direct -q
+      - name: Direct and offline tooling tests
+        run: python -m pytest tests/direct tests/tooling -q
       - name: Five-validator GLSim integration
         shell: bash
         run: |

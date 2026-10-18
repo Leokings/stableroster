@@ -1,6 +1,7 @@
 .env
 .venv/
 .artifacts/
+.studionet-runs/
 __pycache__/
 *.py[cod]
 .pytest_cache/

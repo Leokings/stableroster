@@ -22,6 +22,22 @@ from gltest.types import TransactionStatus
 STUDIONET_RPC = "https://studio.genlayer.com/api"
 
 
+def install_rpc_timeouts():
+    """Bound the pinned SDK's otherwise unbounded requests transport in this process."""
+    import requests
+    if getattr(requests.sessions.Session.request, "_release_bounded", False):
+        return
+    original = requests.sessions.Session.request
+
+    def bounded(session, method, url, **kwargs):
+        if kwargs.get("timeout") is None:
+            kwargs["timeout"] = (10, 45)
+        return original(session, method, url, **kwargs)
+
+    bounded._release_bounded = True
+    requests.sessions.Session.request = bounded
+
+
 def wallet_accounts(repository: str, minimum: int):
     location = os.environ.get("GENLAYER_STUDIONET_WALLET_FILE")
     if not location:
@@ -55,7 +71,7 @@ def wallet_accounts(repository: str, minimum: int):
 
 
 def ok(receipt: dict[str, Any]) -> dict[str, Any]:
-    assert tx_execution_succeeded(receipt), json.dumps(receipt, default=str)
+    assert tx_execution_succeeded(receipt), f"execution_failed: {receipt.get('hash')} / {receipt.get('status_name')}"
     assert receipt.get("status_name") == TransactionStatus.FINALIZED.value
     assert receipt.get("result_name") in (None, "AGREE", "MAJORITY_AGREE")
     assert receipt.get("tx_execution_result_name") in (None, "FINISHED_WITH_RETURN")
@@ -102,38 +118,3 @@ def source_schema_proof(address: str, source_path: Path, required_methods: set[s
         "deployed_source_sha256": hashlib.sha256(deployed_source).hexdigest(),
         "schema_methods_verified": sorted(required_methods),
     }
-
-
-def emit_record(
-    repository: str,
-    batch: str,
-    address: str,
-    deploy_receipt: dict[str, Any],
-    setup_receipts: list[dict[str, Any]],
-    intelligent_receipt: dict[str, Any],
-    accounts: list[Any],
-    proof: dict[str, Any],
-    observed: dict[str, Any],
-) -> None:
-    record = {
-        "schema": "genlayer-intelligent-contract-deployment/v2",
-        "network": {"name": "studionet", "chain_id": 61999, "rpc": STUDIONET_RPC},
-        "repository": repository,
-        "batch": batch,
-        "contract_address": address,
-        "deployment_transaction_hash": deploy_receipt["hash"],
-        "setup_transaction_hashes": [item["hash"] for item in setup_receipts],
-        "intelligent_transaction_hash": intelligent_receipt["hash"],
-        "wallet_addresses": [str(account.address) for account in accounts],
-        "wallet_policy": "repository-specific disposable bundle outside workspace; no cross-repository reuse",
-        "source": proof,
-        "verification": {
-            "status": "FINALIZED",
-            "execution_success": True,
-            "latest_final_readback": True,
-            "deployed_source_exact": True,
-            "schema_read": True,
-            "observed": observed,
-        },
-    }
-    print("STUDIONET_RECORD=" + json.dumps(record, sort_keys=True, default=str))

@@ -1,14 +1,21 @@
-# Source policy
+# Source and consent policy
 
-StableRoster does not fetch websites, APIs, files, or private databases.
-It evaluates only bounded public calldata supplied by a caller. Therefore:
+StableRoster v2 ranks only bounded public profiles and a caller-supplied policy.
+It fetches no website, API, identity service or private source. Every validator
+receives the same transaction-bound snapshot and must reproduce the complete
+normalized preference matrices.
 
-- the contract never implies that a URL or real-world claim was independently verified;
-- source selection, provenance, licensing, and freshness remain client responsibilities;
-- validators receive the same stored public snapshot and closed policy;
-- prompt text labels all caller material as untrusted data, never instructions;
-- results are reusable semantic/algorithmic outputs, not factual attestations.
+Profiles are not authenticated statements. Model fit rankings are not actual
+participant preferences. The resulting matching is stable only relative to the
+agreed matrices. A wallet response records control of that address and its
+acceptance/rejection of the particular roster, not real-world identity.
 
-If a deployment needs live-world evidence, an off-chain client must collect and
-display that evidence before calling the contract. Adding external fetching would
-change the trust model and requires a new audit and StudioNet deployment.
+The owner may create a roster with other wallets listed, but cannot make those
+wallets accept. Zero and duplicate wallets are rejected; unpaired members
+cannot respond. Before expiry, paired members can reject; after expiry anyone
+can close the pending record without model interpretation.
+
+Clients own provenance, source permissions, fairness review, privacy,
+notification and account UX. terms_digest binds frozen inputs and the deadline;
+it authenticates neither a biography nor professional authority. Adding
+external verification or funds requires new design review and deployment.

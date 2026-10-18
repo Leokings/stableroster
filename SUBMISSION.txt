@@ -1,40 +1,42 @@
-4. StableRoster
+DRAFT — DO NOT SUBMIT YET
+Current fixes are local, not pushed or deployed. Repository remains private.
 
 Contribution Date
-08/25/2026
+Use the actual release/contribution date; this local revision is 10/18/2026.
 
 Title
-StableRoster - Bilateral stable roster construction
+StableRoster v2 — Stable pairing with finite bilateral consent
 
 Notes / Description
-Built StableRoster, a reusable GenLayer intelligent contract for bilateral stable roster construction. Consensus produces complete preference matrices for two cohorts; deterministic Gale-Shapley matching creates pairs that require member responses. One deployment supports multiple independently keyed records and callers. Inputs are public, caller-supplied snapshots; the contract does not automatically fetch or authenticate sources and moves no funds. GenVM lint, strict type checking, 4 direct tests and one five-validator GLSim flow passed. StudioNet verified successful finalized intelligent execution, final-state readback and matching deployed source.
+Built StableRoster v2, a reusable MIT-licensed GenLayer Intelligent Contract for bilateral matching. Validators independently derive complete fit rankings from bounded public profiles under a frozen policy, strictly validate integer permutations, and agree on every normalized field. Deterministic Gale-Shapley creates stable pairs; only each paired wallet can accept its own assignment. All paired members must consent to seal; decline, owner withdrawal or permissionless expiry closes the roster. A maximum seven-day deadline, nonzero unique wallets, immutable term digests and terminal-state guards prevent stuck or rewritten records. Lint, strict typechecking, 25 direct tests, 4 five-validator local lifecycle scenarios and 11 offline tooling tests pass. Fresh live v2 proof is pending; the August test reached awaiting responses only. No funds, identity or profile-authenticity attestation.
 
 Evidence 1 Type
 GitHub Repository
 
 Evidence 1 URL
 https://github.com/Leokings/stableroster
+Private — public reviewer access is a release blocker.
 
 Evidence 2 Type
-GitHub File
+GitHub File — deployed source pinned to release commit
 
 Evidence 2 URL
-https://github.com/Leokings/stableroster/blob/main/deployments/studionet.json
+PENDING — current local source is not pushed.
 
 Evidence 3 Type
-GenLayer Studio Contract
+GitHub File — current release proof manifest
 
 Evidence 3 URL
-https://studio.genlayer.com/?import-contract=0x835D4992fc688AeAe043f0B30839BDB3132282D4
+PENDING — no current v2 live proof.
 
 Evidence 4 Type
-GenLayer Explorer Contract
+GenLayer Studio Contract
 
 Evidence 4 URL
-https://explorer-studio.genlayer.com/address/0x835D4992fc688AeAe043f0B30839BDB3132282D4
+PENDING — add the new v2 import-contract URL after approved deployment.
 
 Evidence 5 Type
-Other
+GenLayer Explorer Contract / key demonstration transactions
 
 Evidence 5 URL
-https://explorer-studio.genlayer.com/tx/0x4059545d610f6492dc06bf3f46bc8ccf0978c3358ddde766748c495bbc3627f4
+PENDING — add new finalized v2 contract and expected-failure proof links.
