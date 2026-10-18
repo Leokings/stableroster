@@ -8,7 +8,8 @@ Status (2026-10-18): v2 is deployed and verified on StudioNet. The fresh live
 suite passed both lifecycle tests plus a separate runtime probe. Five cases
 cover SEALED, DECLINED, WITHDRAWN, profile injection and real-time EXPIRED.
 All 24 primary transactions finalized: 14 successful executions and 10 expected
-rejections. The repository's public-access release check is still pending.
+rejections. The repository is public; all five submission links returned HTTP
+200 without authentication, and the pinned source's byte hash matches deployment.
 
 - [Inspect the live contract in StudioNet](https://studio.genlayer.com/?import-contract=0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0)
 - [Inspect its address and transactions](https://explorer-studio.genlayer.com/address/0xF7f5A3e8a80177dcc5BF24810303c9010101CcA0)

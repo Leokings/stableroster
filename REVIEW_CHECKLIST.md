@@ -19,7 +19,7 @@
 - [x] Final records and exact deployed source / all seven methods verified
 - [x] Public-format manifest with source commit, receipts and actual vote maps
 - [x] Wallet-free read-only verifier; no key or signing required
-- [ ] Approved public visibility and anonymous evidence-link checks
+- [x] Approved public visibility and all five anonymous evidence-link checks
 - [x] Copy/paste submission fields updated to actual v2 outcomes
 - [ ] Owner submits the final Portal contribution
 

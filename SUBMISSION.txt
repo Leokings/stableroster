@@ -25,7 +25,7 @@ Evidence 3 Type
 GitHub File — finalized deployment proof
 
 Evidence 3 URL
-https://github.com/Leokings/stableroster/blob/main/deployments/studionet.json
+https://github.com/Leokings/stableroster/blob/7fbfa64352796f52b731a519637e066e0d21fe74/deployments/studionet.json
 
 Evidence 4 Type
 GenLayer Studio Contract

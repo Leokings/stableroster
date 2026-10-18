@@ -17,7 +17,7 @@ Git blob: 293e5fd407ca3ed2cf3bd49aca46bc9fef2154f7
 | SR-3: acceptance-required zero wallet allowed | Low | Reject zero and duplicate wallets before semantic work |
 | SR-4: owner could overwrite a declined/withdrawn terminal record | Additional hardening | All four terminal states reject later mutations; closure timestamps preserve the result |
 | Old live proof never completed bilateral consent | Review blocker | Fresh v2 live suite completed consent, decline, withdrawal, injection and expiry cases |
-| Private source / missing release evidence | Evidence blocker | Reviewed source pushed; current manifest exported; anonymous-access publication check pending |
+| Private source / missing release evidence | Evidence blocker | Source and current proof pushed, repository public, all five evidence links checked anonymously |
 
 Added immutable terms_digest and bounded record serialization. The fifth
 response_deadline argument and roster/v2 schema are intentional breaking
@@ -91,8 +91,12 @@ fresh live v2 scenarios. Not production-certified.
 Distinctiveness: PASS against the recorded 22 prior submissions and
 EvidenceCircuit, especially distinct from FlowDispatch's max-flow mechanism.
 No exhaustive/global novelty claim.
-Evidence readiness: PENDING only the approved public-repository and anonymous
-link checks. Source, current manifest and finalized live outcomes are complete.
+Evidence readiness: PASS. The approved repository is public; all five form
+links returned HTTP 200 without authentication. The pinned source fetched
+anonymously matches the deployed byte hash. Source, current proof and finalized
+outcomes are complete. GitHub release checks passed on proof commit
+7fbfa64352796f52b731a519637e066e0d21fe74:
+https://github.com/Leokings/stableroster/actions/runs/39170335613
 
 The final Portal contribution remains an owner action. No points, acceptance
 or weekly submission capacity are promised.
